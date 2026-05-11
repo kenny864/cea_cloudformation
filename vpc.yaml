@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Cloudformation for VPC"
+
+Resources:
+  # My VPC
+  MyVPC:
+    Type: "AWS::EC2::VPC"
+    Properties:
+      CidrBlock: "150.12.0.0/16"
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: MyVPC
+
+  # Public Subnet in AZ 1
+  PublicSubnet1A:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "150.12.1.0/24"
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: PublicSubnet1A
+
+  # App Private Subnet in AZ 1
+  AppSubnet1A:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "150.12.2.0/24"
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      Tags:
+      - Key: Name
+        Value: AppPrivateSubnet1A
+
+  # Database Private Subnet in AZ 1
+  DatabaseSubnet1A:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "150.12.3.0/24"
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      Tags:
+      - Key: Name
+        Value: DbPrivateSubnet1A
+
+  # Public Subnet in AZ 2
+  PublicSubnet1B:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "150.12.4.0/24"
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: PublicSubnet1B
+
+  # App Private Subnet in AZ 2
+  AppSubnet1B:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "150.12.5.0/24"
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      Tags:
+      - Key: Name
+        Value: AppPrivateSubnet1B
+
+  # Database Private Subnet in AZ 2
+  DatabaseSubnet1B:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: "150.12.6.0/24"
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      Tags:
+      - Key: Name
+        Value: DbPrivateSubnet1B
