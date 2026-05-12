@@ -80,3 +80,50 @@ Resources:
       Tags:
       - Key: Name
         Value: DbPrivateSubnet1B
+
+  # Internet Gateway
+  InternetGateway:
+    Type: "AWS::EC2::InternetGateway"
+    Properties:
+      Tags:
+      - Key: Name
+        Value: MyVPC-IGW
+
+  # Attach IGW to VPC
+  AttachInternetGatewayToVPC:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # Public Route Tables
+  PublicRouteTable:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+      - Key: Name
+        Value: PublicRouteTable
+
+  # Routes
+  PublicRoute:
+    Type: "AWS::EC2::Route"
+    DependsOn: AttachInternetGatewayToVPC
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  # Public Subnet 1A Route Table Association
+  PublicSubnet1ARouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetID: !Ref PublicSubnet1A
+      RouteTableId: !Ref PublicRouteTable
+  
+    # Public Subnet 1B Route Table Association
+  PublicSubnet1ARouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetID: !Ref PublicSubnet1B
+      RouteTableId: !Ref PublicRouteTable
