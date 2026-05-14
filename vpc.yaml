@@ -163,3 +163,57 @@ Resources:
       Tags:
         - Key: Name
           Value: BastionHost
+
+  # App 1A Security Group
+  App1ASG:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Enable SSH access from Bastion"
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !Ref BastionSG
+
+  # App Instance 1A
+  AppInstance1A:
+    Type: "AWS::EC2::Instance"
+    DependsOn: App1ASG
+    Properties:
+      InstanceType: t3.micro
+      KeyName: !Ref BastionKeyPair
+      ImageId: ami-0a59ec92177ec3fad
+      SubnetId: !Ref AppSubnet1A
+      SecurityGroupIds:
+        - !Ref App1ASG
+      Tags:
+        - Key: Name
+          Value: AppInstance1A
+        
+  # App 1B Security Group
+  App1BSG:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Enable ICMP Ping from App 1"
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+          SourceSecurityGroupId: !Ref App1ASG
+
+  # App Instance 1B
+  AppInstance1B:
+    Type: "AWS::EC2::Instance"
+    DependsOn: App1BSG
+    Properties:
+      InstanceType: t3.micro
+      KeyName: !Ref BastionKeyPair
+      ImageId: ami-0a59ec92177ec3fad
+      SubnetId: !Ref AppSubnet1B
+      SecurityGroupIds:
+        - !Ref App1BSG
+      Tags:
+        - Key: Name
+          Value: AppInstance1B
