@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "IAM Cloudformation template"
+
+Resources:
+  MyIAMGroup:
+    Type: "AWS::IAM::Group"
+    Properties:
+      GroupName: "TestGroupName"
+
+  MyIAMRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Description: "Role for EC2 to Describe EC2 Instances"
+      RoleName: "Ec2DescribeRole"
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+
+  MyIAMPolicy:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "ec2:DescribeInstances"
+            Resource: "*"
+      PolicyName: "policyTest"
+      Groups: 
+        - !Ref MyIAMGroup
+      Roles:
+        - !Ref MyIAMRole
+
+  MyIAMUser:
+    Type: "AWS::IAM::User"
+    Properties:
+      ManagedPolicyArns: 
+        - "arn:aws:iam::aws:policy/AdministratorAccess"
+      UserName: "KennyCFN"
+      Groups:
+        - !Ref MyIAMGroup
