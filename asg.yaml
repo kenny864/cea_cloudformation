@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "Cloudformation for VPC"
+Description: "Cloudformation for ASG"
 
 Resources:
   # My VPC
